@@ -4,6 +4,7 @@ import Confirmar from "./Confirmar";
 import Home from "./Home";
 import Manager from "./Manager";
 import Authenticate from "./Authenticate";
+import Thanks from "./Thanks";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/confirmar" element={<Confirmar />} />
           <Route path="/manager" element={<Manager />} />
           <Route path="/authenticate" element={<Authenticate />} />
+          <Route path='/thanks' element={<Thanks />} />
         </Routes>
       </div>
     </Router>

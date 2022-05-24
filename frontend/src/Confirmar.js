@@ -8,7 +8,6 @@ const Confirmar = () => {
 
     const handleSubmit = () => {
         const sendCodigo = codigo;
-        console.log(sendCodigo)
 
         fetch("http://localhost:3333/confirmados", {
             method: "POST",
@@ -19,6 +18,16 @@ const Confirmar = () => {
             body: JSON.stringify({codigo: sendCodigo})
         })
         .then(res => res.json())
+        .then(res=>{
+                console.log(res)
+                if(res.message === "Codigo is already on database"){
+                    alert("O código já está confirmado!")
+                }else if(res.message === "Codigo is not on database"){
+                    alert("O código não é válido!")
+                }else{
+                    window.location.href = "/thanks"
+                }
+            })
     }
 
     return ( 

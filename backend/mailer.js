@@ -39,7 +39,7 @@ const sendEmail = (email, name, message) => {
         service: 'gmail',
         auth: {
           user: 'hugofollonidev@gmail.com',
-          pass: pass: process.env.PASSWORD
+          pass: process.env.PASSWORD
         }
       });
   

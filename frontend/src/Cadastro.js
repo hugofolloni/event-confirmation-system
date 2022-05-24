@@ -24,8 +24,6 @@ const Cadastro = () => {
             codigo: codigo
         }
 
-        console.log(data)
-
         fetch("http://localhost:3333/usuario", {
             method: "POST",
             headers: {
@@ -36,12 +34,13 @@ const Cadastro = () => {
         })
         .then(res => res.json())
         .then(res => {
-            const response = res;
-            console.log(response)
+            console.log(res)
+            if(res.message === "Email is already on database"){
+                alert("O email já está cadastrado")
+            }else{
+                window.location.href = "/thanks"
+            }
         })
-        .then(data => console.log(data))
-
-
     }
 
     return ( 
@@ -61,7 +60,7 @@ const Cadastro = () => {
                     </div>
                     <div className="form-item">
                         <p>Email</p>
-                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+                         <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                 </div>
                 <div className="botao">

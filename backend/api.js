@@ -3,8 +3,9 @@ const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
+require('dotenv').config();
 
-console.log('backend started');
+console.log('Backend is running!');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -34,18 +35,17 @@ app.post('/usuario', (req, res) => {
     const object = req.body
     for(let i = 0; i < users.length; i++) {
         if(users[i].email === object.email) {
-            res.send({
-                error: 'Email já cadastrado'
+            return res.send({
+                message: 'Email is already on database'
             })
-            return;
         }
     }
-    console.log(object)
+    console.log(`Pushing ${object} to database`)
     users.push(object)
 
     sendConfirmationEmail(object.email, object.nome, object.codigo)
 
-    res.send("User is added to database");
+    res.send({message: "User is added to database"});
     fs.writeFile('./data.json', JSON.stringify(users), (err) => {
         if (err) throw err;
     });
@@ -65,36 +65,43 @@ app.get('/usuario/:id', (req, res) => {
 app.post('/confirmados', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const object = req.body
-    console.log(object)
     const codigo = object.codigo;
 
     var confirmado = false;
 
-    console.log(codigo)
+    for(let i = 0; i < confirmados.length; i++) {
+        if(confirmados[i].codigo == codigo) {
+            confirmado = false;
+            return res.send({
+                message: 'Codigo is already on database'
+            })
+        }
+    }
 
     for(let i = 0; i < users.length; i++) {
-        console.log(users[i].codigo)
         if(users[i].codigo == codigo) {
             confirmado = true;
             const userConfimado = {
                 nome: users[i].nome,
-                email: users[i].email
+                email: users[i].email,
+                codigo: users[i].codigo
             }
-            console.log(userConfimado)
             confirmados.push(userConfimado)
-            console.log('pushing')
+            console.log(`Pushing user to database`)
+            res.send({message: "User is added to database"});
             fs.writeFile('./confirmados.json', JSON.stringify(confirmados), (err) => {
                 if (err) throw err;
             });
         }
     }
 
-    if(confirmado) {
-        res.send("Usuário confirmado!");
-    } else {
-        res.send("Código inválido!");
-    }
+    console.log(confirmado)
 
+    if(!confirmado) {
+        res.send({
+            message: 'Codigo is not on database'
+        })
+    }
 
 })
 
@@ -126,14 +133,14 @@ app.post('/manager/dates', (req, res) => {
     console.log(object)
     for(let i = 0; i < manager.dates.length; i++) {
         if((manager.dates[i].date == object.date) && (manager.dates[i].hour == object.hour) && (manager.dates[i].minute === object.minute)) {
-            console.log('Data já cadastrada!')
-            res.send({
-                error: 'Data já cadastrada'
+            return res.send({
+                message: 'Date is already on database'
             })
-            return;
         }
     }
     manager.dates.push(object)
+    res.send({message: "Date is added to database"});
+    console.log(`Pushing ${object} to database`)
     
     if(child != 0){
         child.kill()

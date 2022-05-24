@@ -42,6 +42,9 @@ const Manager = () => {
     const [newMinutes, setNewMinutes] = useState(0);
 
     const handleAddData = () => {
+        if(newDate === ''){
+            return alert('Por favor, preencha todos os campos!')
+        }
         fetch('http://localhost:3333/manager/dates', {
             method: 'POST',
             headers: {
@@ -54,9 +57,28 @@ const Manager = () => {
                     minute: newMinutes
                     })
             })
+        .then(res => res.json())
+        .then(res => {
+            console.log(res.message)
+            if(res.message === 'Date is already on database'){
+                alert("Data já existe")
+            }
+        })
         .then(() => {
             fetchData('http://localhost:3333/manager/dates', 'date')
         })
+    }
+
+    const  addZeroes = (num, len) => {
+        var numberWithZeroes = String(num);
+        var counter = numberWithZeroes.length;
+          
+        while(counter < len) {
+            numberWithZeroes = "0" + numberWithZeroes;
+            counter++;             
+        }
+      
+      return numberWithZeroes;
     }
 
 
@@ -115,7 +137,7 @@ const Manager = () => {
                             { date.map(data => {
                                 return (
                                     <div>
-                                        <p>· {data.date}</p>
+                                        <p>· {data.date} - {addZeroes(data.hour, 2)}:{addZeroes(data.minute, 2)}</p>
                                     </div>
                             )})}
                         </div>

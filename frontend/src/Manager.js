@@ -155,8 +155,8 @@ const Manager = () => {
                                         <input type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)}/>
                                     </div>
                                     <div className='add-data-second-row'>
-                                        <input type='number' step='1' max='23' value={newHour} onChange={(e) => setNewHour(e.target.value)}/>
-                                        <input type='number' step='1' max='59' value={newMinutes} onChange={(e) => setNewMinutes(e.target.value)}/>
+                                        <input type='number' step='1' min='0' max='23' value={newHour} onChange={(e) => setNewHour(e.target.value)}/>
+                                        <input type='number' step='1' min='0' max='59' value={newMinutes} onChange={(e) => setNewMinutes(e.target.value)}/>
                                     </div>
                                     <button onClick={() => handleAddData()}>Adicionar</button>
                                 </div>

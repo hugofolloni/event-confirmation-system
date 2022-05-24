@@ -156,7 +156,6 @@ app.post('/manager/dates', (req, res) => {
     fs.writeFile('./manager.json', JSON.stringify(manager), (err) => {
         if (err) throw err;
     });
-    res.send("Dates added to database");
 })
 
 

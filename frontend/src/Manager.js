@@ -63,6 +63,9 @@ const Manager = () => {
             if(res.message === 'Date is already on database'){
                 alert("Data já existe")
             }
+            else{
+                setShowAddData(false);
+            }
         })
         .then(() => {
             fetchData('http://localhost:3333/manager/dates', 'date')

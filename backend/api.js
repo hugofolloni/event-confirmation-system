@@ -15,6 +15,8 @@ var users = [];
 var confirmados = [];
 var manager = []
 
+var child = 0;
+
 fs.readFile('./data.json', 'utf8', (err, data) => {
     if (err) throw err;
     users = JSON.parse(data);
@@ -102,6 +104,12 @@ app.post('/confirmados', (req, res) => {
             message: 'Codigo is not on database'
         })
     }
+    else{
+        if(child != 0){
+            child.kill()
+        }
+        child = require('child_process').fork('mailer.js')
+    }
 
 })
 
@@ -126,7 +134,6 @@ app.get('/manager/dates', (req, res) => {
     res.json(manager.dates)
 })
 
-var child = 0;
 app.post('/manager/dates', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const object = req.body

@@ -1,27 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 require('dotenv').config();
 
-// server/index.js
-const path = require('path');
-const express = require('express');
 
+const router = express.Router();
 
-// Fazer com que o Node sirva os arquivos do app em React criado
-app.use(express.static(path.resolve(__dirname, '../client/build')));
-
-// Lidar com as solicitações GET feitas à rota /api
-app.get("/api", (req, res) => {
-  res.json({ message: "Hello from server!" });
-});
-
-// Todas as outras solicitações GET não tratadas retornarão nosso app em React
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
 
 console.log('Backend is running!');
 
@@ -35,22 +22,22 @@ var manager = []
 
 var child = 0;
 
-fs.readFile('./data.json', 'utf8', (err, data) => {
+fs.readFile('./backend/data.json', 'utf8', (err, data) => {
     if (err) throw err;
     users = JSON.parse(data);
 });
 
-fs.readFile('./confirmados.json', 'utf8', (err, data) => {
+fs.readFile('./backend/confirmados.json', 'utf8', (err, data) => {
     if (err) throw err;
     confirmados = JSON.parse(data);
 });
 
-fs.readFile('./manager.json', 'utf8', (err, data) => {
+fs.readFile('./backend/manager.json', 'utf8', (err, data) => {
     if (err) throw err;
     manager = JSON.parse(data);
 });
 
-app.post('/usuario', (req, res) => {
+router.post('/api/usuario', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const object = req.body
     for(let i = 0; i < users.length; i++) {
@@ -71,18 +58,18 @@ app.post('/usuario', (req, res) => {
     });
 })
 
-app.get('/usuario', (req, res) => {
+router.get('/api/usuario', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(users)
 })
 
-app.get('/usuario/:id', (req, res) => {
+router.get('/api/usuario/:id', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const id = req.params.id;
     res.json(users[id])
 })
 
-app.post('/confirmados', (req, res) => {
+router.post('/api/confirmados', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const object = req.body
     const codigo = object.codigo;
@@ -131,28 +118,28 @@ app.post('/confirmados', (req, res) => {
 
 })
 
-app.get('/confirmados', (req, res) => {
+router.get('/api/confirmados', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(confirmados)
 })
 
-app.get('/confirmados/:id', (req, res) => {
+router.get('/api/confirmados/:id', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const id = req.params.id;
     res.json(confirmados[id])
 })
 
-app.get('/manager', (req, res) => {
+router.get('/api/manager', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(manager)
 })
 
-app.get('/manager/dates', (req, res) => {
+router.get('/api/manager/dates', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(manager.dates)
 })
 
-app.post('/manager/dates', (req, res) => {
+router.post('/api/manager/dates', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const object = req.body
     console.log(object)
@@ -203,6 +190,7 @@ const sendConfirmationEmail = (email, name, codigo) => {
     });
 }
 
+app.use('/.netlify/functions/server', router);
 
-
-app.listen(3333);
+module.exports = app;
+module.exports.handler = serverless(app);

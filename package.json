@@ -7,7 +7,7 @@
     "start:app": "cd frontend && npm start",
     "build": "run-p build:**",
     "build:lambda": "netlify-lambda build backend",
-    "build:app": "cd frontend && npm run build",
+    "build:app": "cd frontend && npm install && npm run build",
     "deploy:draft": "netlify deploy --dir=frontend/build --functions=functions",
     "deploy:prod": "netlify deploy --dir=frontend/build --functions=functions --prod"
   },

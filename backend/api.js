@@ -5,6 +5,24 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 require('dotenv').config();
 
+// server/index.js
+const path = require('path');
+const express = require('express');
+
+
+// Fazer com que o Node sirva os arquivos do app em React criado
+app.use(express.static(path.resolve(__dirname, '../client/build')));
+
+// Lidar com as solicitações GET feitas à rota /api
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from server!" });
+});
+
+// Todas as outras solicitações GET não tratadas retornarão nosso app em React
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
+
 console.log('Backend is running!');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,7 +60,7 @@ app.post('/usuario', (req, res) => {
             })
         }
     }
-    console.log(`Pushing ${object} to database`)
+    console.log(`Pushing user to database`)
     users.push(object)
 
     sendConfirmationEmail(object.email, object.nome, object.codigo)
@@ -147,7 +165,7 @@ app.post('/manager/dates', (req, res) => {
     }
     manager.dates.push(object)
     res.send({message: "Date is added to database"});
-    console.log(`Pushing ${object} to database`)
+    console.log(`Pushing date to database`)
     
     if(child != 0){
         child.kill()
@@ -173,7 +191,7 @@ const sendConfirmationEmail = (email, name, codigo) => {
         from: 'hugofollonidev@gmail.com',
         to: email,
         subject: "Obrigado pela inscrição em DEVSINCRIVEIS",
-        text: `Olá, ${name}, obrigado por se inscrever no evento! Seu código de confirmação é ${codigo}! Entre no link: https://localhost:3333/confirmar`
+        text: `Olá, ${name}, obrigado por se inscrever no evento! Seu código de confirmação é ${codigo}! Entre no link: https://localhost:3000/confirmar`
     };
 
     transporter.sendMail(mailOptions, function(error, info){

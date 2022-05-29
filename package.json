@@ -8,8 +8,8 @@
     "build": "run-p build:**",
     "build:lambda": "netlify-lambda build backend",
     "build:app": "cd client && npm build",
-    "deploy:draft": "netlify deploy --dir=client/build --functions=functions",
-    "deploy:prod": "netlify deploy --dir=client/build --functions=functions --prod"
+    "deploy:draft": "netlify deploy --dir=frontend/build --functions=functions",
+    "deploy:prod": "netlify deploy --dir=frontend/build --functions=functions --prod"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
